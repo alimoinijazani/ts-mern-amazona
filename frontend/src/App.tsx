@@ -1,10 +1,13 @@
 import { Link, Outlet } from 'react-router-dom';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Badge, Container, Nav, Navbar } from 'react-bootstrap';
 import { useContext, useEffect } from 'react';
 import { Store } from './Store';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { LinkContainer } from 'react-router-bootstrap';
 function App() {
   const {
-    state: { mode },
+    state: { mode, cart },
     dispatch,
   } = useContext(Store);
 
@@ -16,10 +19,13 @@ function App() {
   };
   return (
     <div className="d-flex flex-column vh-100">
+      <ToastContainer position="bottom-center" limit={1} />
       <header>
         <Navbar bg="dark" variant="dark" expand="lg">
           <Container>
-            <Navbar.Brand>tsamazona</Navbar.Brand>
+            <LinkContainer to="/">
+              <Navbar.Brand>tsamazona</Navbar.Brand>
+            </LinkContainer>
           </Container>
           <Nav>
             <Link
@@ -30,9 +36,14 @@ function App() {
               <i className={mode === 'light' ? 'fa fa-sun' : 'fa fa-moon'}></i>{' '}
               {mode === 'light' ? 'Light' : 'Dark'}
             </Link>
-            <a href="/cart" className="nav-link">
+            <Link to="/cart" className="nav-link">
               Cart
-            </a>
+              {cart.cartItems.length > 0 && (
+                <Badge pill bg="danger">
+                  {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                </Badge>
+              )}
+            </Link>
             <a href="/signin" className="nav-link">
               Sign In
             </a>

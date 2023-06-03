@@ -1,13 +1,15 @@
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetProductDetailsBySlugQuery } from '../hooks/productHooks';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { getError } from '../utils';
+import { convertProductToCartItem, getError } from '../utils';
 import { ApiError } from '../types/ApiError';
 import { Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import Rating from '../components/Rating';
-
+import { useContext } from 'react';
+import { Store } from '../Store';
+import { toast } from 'react-toastify';
 export default function ProductPage() {
   const params = useParams();
   const { slug } = params;
@@ -16,8 +18,22 @@ export default function ProductPage() {
     isLoading,
     error,
   } = useGetProductDetailsBySlugQuery(slug!);
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
+  const navigate = useNavigate();
   const addToCartHandler = () => {
-    console.log('l');
+    const existItem = cart.cartItems.find((x) => x._id === product!._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    if (product!.countInStock < quantity) {
+      toast.warn('Sorry. Product is out of stock');
+      return;
+    }
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...convertProductToCartItem(product!), quantity },
+    });
+    toast.success('Product added to the cart');
+    navigate('/cart');
   };
   return isLoading ? (
     <LoadingBox />
