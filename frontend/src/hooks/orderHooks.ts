@@ -3,6 +3,12 @@ import { CartItem, ShippingAddress } from '../types/Cart';
 import apiClient from '../apiClient';
 import { Order } from '../types/Order';
 
+export const useGetOrderDetailsQuery = (id: string) =>
+  useQuery({
+    queryKey: ['orders', id],
+    queryFn: async () => (await apiClient.get<Order>(`api/orders/${id}`)).data,
+  });
+
 export const useCreateOrderMutation = () =>
   useMutation({
     mutationFn: async (order: {
