@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ import {
   useGetPaypalClientIdQuery,
   usePayOrderMutation,
 } from '../hooks/orderHooks';
-import { Store } from '../Store';
+
 import { ApiError } from '../types/ApiError';
 import { getError } from '../utils';
 
@@ -22,9 +22,6 @@ import {
 } from '@paypal/react-paypal-js';
 
 export default function OrderPage() {
-  const { state } = useContext(Store);
-  const { userInfo } = state;
-
   const params = useParams();
   const { id: orderId } = params;
 
@@ -216,7 +213,7 @@ export default function OrderPage() {
                     ) : (
                       <div>
                         <PayPalButtons
-                        // {...paypalbuttonTransactionProps}
+                          {...paypalbuttonTransactionProps}
                         ></PayPalButtons>
                         <Button onClick={testPayHandler}>Test Pay</Button>
                       </div>
