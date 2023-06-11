@@ -26,6 +26,7 @@ import PlaceOrderPage from './pages/PlaceOrderPage.tsx';
 import OrderPage from './pages/OrderPage.tsx';
 import OrderHistoryPage from './pages/OrderHistoryPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
+import SearchPage from './pages/SearchPage.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,7 +34,9 @@ const router = createBrowserRouter(
       <Route index={true} element={<HomePage />} />
       <Route path="product/:slug" element={<ProductPage />} />
       <Route path="cart" element={<CartPage />} />
+      <Route path="/search" element={<SearchPage />} />
       <Route path="signin" element={<SigninPage />} />
+
       <Route path="signup" element={<SignupPage />} />
       <Route path="" element={<ProtectedRoute />}>
         <Route path="shipping" element={<ShippingAddressPage />} />

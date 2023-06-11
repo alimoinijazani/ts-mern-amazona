@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
-import { Badge, Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
-import { useContext, useEffect } from 'react';
+import { Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { useContext, useEffect, useState } from 'react';
 import { Store } from './Store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,6 +26,8 @@ function App() {
     localStorage.removeItem('paymentMethod');
     window.location.href = '/signin';
   };
+
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   return (
     <div className="d-flex flex-column vh-100">
       <ToastContainer position="bottom-center" limit={1} />
@@ -107,7 +109,11 @@ function App() {
           </div>
           <div className="sub-header">
             <div className="d-flex">
-              <Link to="#" className="nav-link header-link p-1">
+              <Link
+                to="#"
+                className="nav-link header-link p-1"
+                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+              >
                 <i className="fas fa-bars"></i> All
               </Link>
               {['Todays Deal', 'Gifts', 'On Sale'].map((x) => (
@@ -124,7 +130,7 @@ function App() {
         </Navbar>
       </header>
       <main>
-        <Container className="mt-3">
+        <Container fluid>
           <Outlet />
         </Container>
       </main>
