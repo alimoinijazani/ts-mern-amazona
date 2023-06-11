@@ -5,13 +5,14 @@ import { UserInfo } from './types/UserInfo';
 type AppState = {
   mode: string;
   cart: Cart;
+  fullBox: boolean;
   userInfo?: UserInfo;
 };
 const initialState: AppState = {
   userInfo: localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo')!)
     : null,
-
+  fullBox: false,
   mode: localStorage.getItem('mode')
     ? localStorage.getItem('mode')!
     : window.matchMedia &&
@@ -36,6 +37,8 @@ const initialState: AppState = {
 };
 type Action =
   | { type: 'SWITCH_MODE' }
+  | { type: 'SET_FULLBOX_ON' }
+  | { type: 'SET_FULLBOX_OFF' }
   | { type: 'CART_ADD_ITEM'; payload: CartItem }
   | { type: 'CART_REMOVE_ITEM'; payload: CartItem }
   | { type: 'CART_CLEAR' }
@@ -48,6 +51,10 @@ function reducer(state: AppState, action: Action): AppState {
     case 'SWITCH_MODE':
       localStorage.setItem('mode', state.mode === 'dark' ? 'light' : 'dark');
       return { ...state, mode: state.mode === 'dark' ? 'light' : 'dark' };
+    case 'SET_FULLBOX_ON':
+      return { ...state, fullBox: true };
+    case 'SET_FULLBOX_OFF':
+      return { ...state, fullBox: false };
     case 'CART_ADD_ITEM': {
       const newItem = action.payload;
       const existItem = state.cart.cartItems.find(
@@ -76,6 +83,7 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, userInfo: action.payload };
     case 'USER_SIGNOUT':
       return {
+        fullBox: false,
         mode:
           window.matchMedia &&
           window.matchMedia('(prefers-color-scheme: dark)').matches

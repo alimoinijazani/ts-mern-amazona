@@ -1,14 +1,26 @@
 import { Link, Outlet } from 'react-router-dom';
-import { Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import {
+  Container,
+  ListGroup,
+  Nav,
+  NavDropdown,
+  Navbar,
+} from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from './Store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LinkContainer } from 'react-router-bootstrap';
 import SearchBox from './components/SearchBox';
+import Button from 'react-bootstrap/Button';
+import LoadingBox from './components/LoadingBox';
+import MessageBox from './components/MessageBox';
+import { ApiError } from './types/ApiError';
+import { getError } from './utils';
+import { useGetCategoriesQuery } from './hooks/productHooks';
 function App() {
   const {
-    state: { mode, cart, userInfo },
+    state: { mode, cart, userInfo, fullBox },
     dispatch,
   } = useContext(Store);
 
@@ -26,10 +38,21 @@ function App() {
     localStorage.removeItem('paymentMethod');
     window.location.href = '/signin';
   };
-
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  console.log(sidebarIsOpen);
+  const { data: categories, isLoading, error } = useGetCategoriesQuery();
   return (
-    <div className="d-flex flex-column vh-100">
+    <div
+      className={
+        sidebarIsOpen
+          ? fullBox
+            ? 'site-container active-cont d-flex flex-column full-box'
+            : 'site-container active-cont d-flex flex-column'
+          : fullBox
+          ? 'site-container d-flex flex-column full-box'
+          : 'site-container d-flex flex-column'
+      }
+    >
       <ToastContainer position="bottom-center" limit={1} />
       <header>
         <Navbar
@@ -129,6 +152,62 @@ function App() {
           </div>
         </Navbar>
       </header>
+      {sidebarIsOpen && (
+        <div
+          onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+          className="side-navbar-backdrop"
+        ></div>
+      )}
+      <div
+        className={
+          sidebarIsOpen
+            ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
+            : 'side-navbar d-flex justify-content-between flex-wrap flex-column'
+        }
+      >
+        <ListGroup variant="flush">
+          <ListGroup.Item action className="side-navbar-user">
+            <LinkContainer
+              to={userInfo ? `/profile` : `/signin`}
+              onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+            >
+              <span>
+                {userInfo ? `Hello, ${userInfo.name}` : `Hello, sign in`}
+              </span>
+            </LinkContainer>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <div className="d-flex justify-content-between align-items-center">
+              {' '}
+              <strong>Categories</strong>
+              <Button
+                // variant={mode}
+                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+              >
+                <i className="fa fa-times" />
+              </Button>
+            </div>
+          </ListGroup.Item>
+          {isLoading ? (
+            <LoadingBox />
+          ) : error ? (
+            <MessageBox variant="danger">
+              {getError(error as ApiError)}
+            </MessageBox>
+          ) : (
+            categories!.map((category) => (
+              <ListGroup.Item action key={category}>
+                <LinkContainer
+                  to={{ pathname: '/search', search: `category=${category}` }}
+                  onClick={() => setSidebarIsOpen(false)}
+                >
+                  <Nav.Link>{category}</Nav.Link>
+                </LinkContainer>
+              </ListGroup.Item>
+            ))
+          )}
+        </ListGroup>
+      </div>
       <main>
         <Container fluid>
           <Outlet />
