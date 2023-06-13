@@ -29,6 +29,7 @@ import ProfilePage from './pages/ProfilePage.tsx';
 import SearchPage from './pages/SearchPage.tsx';
 import AdminRoute from './components/AdminRoute';
 import DashboardPage from './pages/DashboardPage.tsx';
+import ProductListPage from './pages/ProductListPage.tsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -50,6 +51,7 @@ const router = createBrowserRouter(
       {/* Admin User */}
       <Route path="/admin" element={<AdminRoute />}>
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="products" element={<ProductListPage />} />
       </Route>
     </Route>
   )
