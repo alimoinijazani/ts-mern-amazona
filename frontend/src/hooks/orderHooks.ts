@@ -3,6 +3,19 @@ import { CartItem, ShippingAddress } from '../types/Cart';
 import apiClient from '../apiClient';
 import { Order } from '../types/Order';
 
+export const useGetOrderSummaryQuery = () =>
+  useQuery({
+    queryKey: ['orders-summary'],
+    queryFn: async () =>
+      (
+        await apiClient.get<{
+          users: [{ numUsers: number }];
+          orders: [{ numOrders: number; totalSales: number }];
+          dailyOrders: [];
+          productCategories: [];
+        }>(`api/orders/summary`)
+      ).data,
+  });
 export const useGetOrderDetailsQuery = (id: string) =>
   useQuery({
     queryKey: ['orders', id],

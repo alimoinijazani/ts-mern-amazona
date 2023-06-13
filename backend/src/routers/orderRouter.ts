@@ -1,9 +1,54 @@
 import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { Order, OrderModel } from '../models/orderModel';
-import { Product } from '../models/productModel';
-import { isAuth } from '../utils';
+import { Product, ProductModel } from '../models/productModel';
+import { isAdmin, isAuth } from '../utils';
+import { UserModel } from '../models/userModel';
 export const orderRouter = express.Router();
+
+orderRouter.get(
+  '/summary',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const orders = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          numOrders: { $sum: 1 },
+          totalSales: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+    const users = await UserModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          numUsers: { $sum: 1 },
+        },
+      },
+    ]);
+    const dailyOrders = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          orders: { $sum: 1 },
+          sales: { $sum: '$totalPrice' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const productCategories = await ProductModel.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.send({ users, orders, dailyOrders, productCategories });
+  })
+);
 
 orderRouter.get(
   '/mine',
