@@ -27,7 +27,8 @@ import OrderPage from './pages/OrderPage.tsx';
 import OrderHistoryPage from './pages/OrderHistoryPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import SearchPage from './pages/SearchPage.tsx';
-
+import AdminRoute from './components/AdminRoute';
+import DashboardPage from './pages/DashboardPage.tsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -46,7 +47,10 @@ const router = createBrowserRouter(
         <Route path="/orderhistory" element={<OrderHistoryPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
-      {/* <Route path='dashboard' element={<DashBoard/>}/> */}
+      {/* Admin User */}
+      <Route path="/admin" element={<AdminRoute />}>
+        <Route path="dashboard" element={<DashboardPage />} />
+      </Route>
     </Route>
   )
 );
