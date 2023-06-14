@@ -13,6 +13,9 @@ export class Product {
   @prop({ required: true })
   public image!: string;
 
+  @prop()
+  public images!: string[];
+
   @prop({ required: true })
   public brand!: string;
 

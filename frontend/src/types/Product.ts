@@ -8,7 +8,7 @@ export type Product = {
   description: string;
   // reviews: Review[]
   slug: string;
-  //   images: string[];
+  images: string[];
   rating: number;
   numReviews: number;
   price: number;

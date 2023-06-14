@@ -39,7 +39,6 @@ function App() {
     window.location.href = '/signin';
   };
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-  console.log(sidebarIsOpen);
   const { data: categories, isLoading, error } = useGetCategoriesQuery();
   return (
     <div

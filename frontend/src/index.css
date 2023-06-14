@@ -17,9 +17,15 @@
 }
 img.large {
   max-width: 100%;
+  max-height: 40rem;
 }
 img.thumbnail {
   height: 80px;
+}
+
+.img-thumbnail {
+  max-height: 300px;
+  max-width: 200px;
 }
 .small-container {
   max-width: 600px;

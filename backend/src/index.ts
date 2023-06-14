@@ -8,6 +8,7 @@ import { seedRouter } from './routers/seedRouter';
 import { userRouter } from './routers/userRouter';
 import { orderRouter } from './routers/orderRouter';
 import { keyRouter } from './routers/keyRouter';
+import { uploadRouter } from './routers/uploadRouter';
 dotenv.config();
 const MONGODB_URI =
   process.env.MONGODB_URI || 'mongodb://localhost/tsmernamazona';
@@ -35,6 +36,8 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/seed', seedRouter);
+app.use('/api/uploads', uploadRouter);
+
 app.use('/api/keys', keyRouter);
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 app.get('*', (req: Request, res: Response) =>

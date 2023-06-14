@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { ProductModel } from '../models/productModel';
+import { Product, ProductModel } from '../models/productModel';
 import { isAdmin, isAuth } from '../utils';
 const PAGE_SIZE = 3;
 
@@ -120,5 +120,79 @@ productRouter.get(
       page,
       pages: Math.ceil(countProducts / PAGE_SIZE),
     });
+  })
+);
+productRouter.post(
+  '/',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const product = await ProductModel.create({
+      name: 'sample name ' + Date.now(),
+      image: '../assets/images/p1.jpg',
+      price: 0,
+      slug: 'sample-slug-' + Date.now(),
+      category: 'sample category',
+      brand: 'sample brand',
+      countInStock: 0,
+      rating: 0,
+      numReviews: 0,
+      description: 'sample description',
+    } as Product);
+
+    const createdProduct = await product.save();
+    res.send({
+      message: 'Product Created',
+      product: createdProduct,
+    });
+  })
+);
+productRouter.get(
+  '/:id',
+  asyncHandler(async (req: Request, res: Response) => {
+    const product = await ProductModel.findById(req.params.id);
+    if (product) {
+      res.send(product);
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+productRouter.put(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const productId = req.params.id;
+    const product = await ProductModel.findById(productId);
+    if (product) {
+      product.name = req.body.name;
+      product.slug = req.body.slug;
+      product.price = req.body.price;
+      product.image = req.body.image;
+      product.images = req.body.images;
+      product.category = req.body.category;
+      product.brand = req.body.brand;
+      product.countInStock = req.body.countInStock;
+      product.description = req.body.description;
+      const updatedProduct = await product.save();
+      res.send({ message: 'Product Updated', product: updatedProduct });
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+productRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const product = await ProductModel.findById(req.params.id);
+    if (product) {
+      const deleteProduct = await product.deleteOne();
+      res.send({ message: 'Product Deleted', product: deleteProduct });
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
   })
 );
