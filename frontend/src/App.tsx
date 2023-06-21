@@ -60,24 +60,26 @@ function App() {
           variant="dark"
           expand="lg"
         >
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
             <LinkContainer to="/" className="header-link">
-              <Navbar.Brand>amazona</Navbar.Brand>
+              <Navbar.Brand className="min-vw-50">amazona</Navbar.Brand>
             </LinkContainer>
             <SearchBox />
-
-            <Navbar.Collapse>
-              <Nav className="w-100 justify-content-end">
-                <Link
-                  to="#"
-                  className="nav-link header-link"
-                  onClick={switchModeHandler}
-                >
-                  <i
-                    className={mode === 'light' ? 'fa fa-sun' : 'fa fa-moon'}
-                  ></i>{' '}
-                  {mode === 'light' ? 'Light' : 'Dark'}
-                </Link>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" className="m-1" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="ms-auto w-100 justify-content-end align-items-center p-2">
+                <Nav.Item>
+                  <Link
+                    to="#"
+                    className="nav-link header-link"
+                    onClick={switchModeHandler}
+                  >
+                    <i
+                      className={mode === 'light' ? 'fa fa-sun' : 'fa fa-moon'}
+                    ></i>{' '}
+                    {mode === 'light' ? 'Light' : 'Dark'}
+                  </Link>
+                </Nav.Item>
 
                 {userInfo ? (
                   <NavDropdown

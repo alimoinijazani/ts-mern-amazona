@@ -89,7 +89,10 @@ a.header-link:hover,
 }
 
 /* header */
-
+.site-container {
+  min-height: 100vh;
+  transition: 0.4s;
+}
 .navbar-brand {
   font-weight: bold;
   font-size: 1.8rem;
@@ -163,4 +166,8 @@ a.header-link:hover,
 
 button.side-navbar-user:hover {
   color: white;
+}
+/*main*/
+main {
+  flex: 1;
 }

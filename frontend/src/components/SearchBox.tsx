@@ -11,7 +11,10 @@ export default function SearchBox() {
     navigate(query ? `/search?query=${query}` : '/search');
   };
   return (
-    <Form className="flex-grow-1 d-flex me-auto" onSubmit={submitHandler}>
+    <Form
+      className="flex-grow-1 d-flex me-auto min-vw-50"
+      onSubmit={submitHandler}
+    >
       <InputGroup>
         <FormControl
           type="text"
