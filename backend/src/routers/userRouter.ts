@@ -28,6 +28,11 @@ userRouter.post(
 userRouter.post(
   '/signup',
   asyncHandler(async (req: Request, res: Response) => {
+    const existUser = await UserModel.find({ email: req.body.email });
+    if (existUser) {
+      res.status(400).send({ message: 'email already exist' });
+      return;
+    }
     const user = await UserModel.create({
       name: req.body.name,
       email: req.body.email,
