@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -37,6 +37,10 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/seed', seedRouter);
 app.use('/api/uploads', uploadRouter);
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).send({ messge: 'server error' });
+  next();
+});
 
 app.use('/api/keys', keyRouter);
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
