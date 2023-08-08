@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -20,6 +20,7 @@ import {
   SCRIPT_LOADING_STATE,
   usePayPalScriptReducer,
 } from '@paypal/react-paypal-js';
+import moment from 'moment';
 
 export default function OrderPage() {
   const params = useParams();
@@ -95,6 +96,26 @@ export default function OrderPage() {
       loadPaypalScript();
     }
   }, [paypalConfig, paypalDispatch]);
+  //timer
+  const [timeLeft, setTimeLeft] = useState(
+    moment(order?.createdAt).diff(moment(), 'seconds')
+  );
+  console.log(timeLeft);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(
+        moment(order?.createdAt).add(1, 'hour').diff(moment(), 'seconds')
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [order?.createdAt]);
+  const formatTime = (time: number) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   return isLoading ? (
     <LoadingBox></LoadingBox>
@@ -204,7 +225,7 @@ export default function OrderPage() {
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                {!order.isPaid && (
+                {!order.isPaid && timeLeft > 0 && (
                   <ListGroup.Item>
                     {isPending ? (
                       <LoadingBox />
@@ -224,6 +245,19 @@ export default function OrderPage() {
                   </ListGroup.Item>
                 )}
               </ListGroup>
+              {
+                <div>
+                  {timeLeft > 0 ? (
+                    <MessageBox variant="info">
+                      You Have: {formatTime(timeLeft)} to pay the order
+                    </MessageBox>
+                  ) : (
+                    <MessageBox variant="danger">
+                      your time has up!put new order
+                    </MessageBox>
+                  )}
+                </div>
+              }
             </Card.Body>
           </Card>
         </Col>

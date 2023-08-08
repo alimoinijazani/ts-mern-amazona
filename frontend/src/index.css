@@ -63,10 +63,10 @@ a.header-link:hover,
   border: 1px white solid;
 }
 
-.header .dropdown-menu,
-.header .dropdown-item {
-  color: black !important;
-  background-color: white;
+.dropdown-menu,
+.dropdown-item {
+  color: white !important;
+  background-color: black;
 }
 .header .dropdown-item a:hover {
   border: 1px rgb(33, 37, 41) solid;
