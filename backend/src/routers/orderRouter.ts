@@ -4,6 +4,7 @@ import { Order, OrderModel } from '../models/orderModel';
 import { Product, ProductModel } from '../models/productModel';
 import { isAdmin, isAuth } from '../utils';
 import { UserModel } from '../models/userModel';
+import { CartItem } from '../types/Cart';
 export const orderRouter = express.Router();
 
 orderRouter.get(
@@ -80,6 +81,7 @@ orderRouter.post(
     if (req.body.orderItems.length === 0) {
       res.status(400).json({ message: 'Cart is empty' });
     } else {
+      //it should be better to check product stock here
       const createdOrder = await OrderModel.create({
         orderItems: req.body.orderItems.map((x: Product) => ({
           ...x,
@@ -93,6 +95,29 @@ orderRouter.post(
         totalPrice: req.body.totalPrice,
         user: req.user._id,
       } as Order);
+      req.body.orderItems.map(async (item: CartItem) => {
+        const product = await ProductModel.findById(item._id);
+
+        if (product) {
+          product.countInStock = product.countInStock - item.quantity;
+          await product.save();
+        } else {
+          res
+            .status(400)
+            .send({ message: 'one or more products are out of stock' });
+        }
+      });
+      setTimeout(async () => {
+        const orderCheck = await OrderModel.findById(createdOrder._id);
+        req.body.orderItems.map(async (item: CartItem) => {
+          const product = await ProductModel.findById(item._id);
+          if (product && !orderCheck?.isPaid) {
+            product.countInStock = product.countInStock + item.quantity;
+            await product.save();
+            console.log('product return');
+          }
+        });
+      }, 60000);
       res.status(201).json({ message: 'Order Created', order: createdOrder });
     }
   })

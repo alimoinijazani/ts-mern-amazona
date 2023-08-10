@@ -100,7 +100,7 @@ export default function OrderPage() {
   const [timeLeft, setTimeLeft] = useState(
     moment(order?.createdAt).diff(moment(), 'seconds')
   );
-  console.log(timeLeft);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(
