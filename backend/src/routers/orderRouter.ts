@@ -98,7 +98,7 @@ orderRouter.post(
       req.body.orderItems.map(async (item: CartItem) => {
         const product = await ProductModel.findById(item._id);
 
-        if (product) {
+        if (product && product.countInStock >= item.quantity) {
           product.countInStock = product.countInStock - item.quantity;
           await product.save();
         } else {
@@ -117,7 +117,7 @@ orderRouter.post(
             console.log('product return');
           }
         });
-      }, 60000);
+      }, 3600000);
       res.status(201).json({ message: 'Order Created', order: createdOrder });
     }
   })

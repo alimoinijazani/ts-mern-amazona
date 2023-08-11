@@ -38,16 +38,17 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/seed', seedRouter);
 app.use('/api/uploads', uploadRouter);
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).send({ messge: 'server error' });
-  next();
-});
 
 app.use('/api/keys', keyRouter);
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 app.get('*', (req: Request, res: Response) =>
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'))
 );
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).send({ messge: 'server error' });
+  next();
+});
+
 const PORT: number = parseInt((process.env.PORT || '4000') as string, 10);
 app.listen(PORT, () => {
   console.log(`server started at http://localhost:${PORT}`);
