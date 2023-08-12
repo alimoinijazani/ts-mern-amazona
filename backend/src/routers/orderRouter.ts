@@ -50,13 +50,23 @@ orderRouter.get(
     res.send({ users, orders, dailyOrders, productCategories });
   })
 );
-
+const PAGE_SIZE = 4;
 orderRouter.get(
   '/mine',
   isAuth,
   asyncHandler(async (req: Request, res: Response) => {
-    const orders = await OrderModel.find({ user: req.user._id });
-    res.json(orders);
+    const page = Number(req.query.page) || 1;
+    const orders = await OrderModel.find({ user: req.user._id })
+      .skip(PAGE_SIZE * (page - 1))
+      .limit(PAGE_SIZE);
+    const countOrders = await OrderModel.countDocuments({ user: req.user._id });
+    // res.json(orders);
+    res.json({
+      orders,
+      countOrders,
+      pages: Math.ceil(countOrders / PAGE_SIZE),
+      page,
+    });
   })
 );
 

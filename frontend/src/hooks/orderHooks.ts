@@ -63,9 +63,13 @@ export const useCreateOrderMutation = () =>
         )
       ).data,
   });
-export const useGetOrderHistoryQuery = () =>
+export const useGetOrderHistoryQuery = (page: number) =>
   useQuery({
-    queryKey: ['order-history'],
+    queryKey: ['order-history', page],
     queryFn: async () =>
-      (await apiClient.get<Order[]>(`/api/orders/mine`)).data,
+      (
+        await apiClient.get<{ orders: [Order]; page: number; pages: number }>(
+          `/api/orders/mine?page=${page}`
+        )
+      ).data,
   });

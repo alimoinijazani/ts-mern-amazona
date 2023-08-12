@@ -5,23 +5,20 @@ import { Store } from '../Store';
 import Button from 'react-bootstrap/Button';
 import { toast } from 'react-toastify';
 import { useGetGoogleApiKeyQuery } from '../hooks/orderHooks';
+import { Location } from '../types/Cart';
 
 const defaultLocation = { lat: 45.516, lng: -73.56 };
-interface myComponentState {
-  lat: number;
-  lng: number;
-}
 
 export default function MapPage() {
-  const { state, dispatch } = useContext(Store);
-  const { userInfo } = state;
+  const { dispatch } = useContext(Store);
+
   const navigate = useNavigate();
   const [googleApiKey, setGoogleApiKey] = useState('');
-  const [center, setCenter] = useState<myComponentState>(defaultLocation);
-  const [location, setLocation] = useState<myComponentState>();
+  const [center, setCenter] = useState<Location>(defaultLocation);
+  const [location, setLocation] = useState<Location>();
 
   const mapRef = useRef<any>(null);
-  const placeRef = useRef(null);
+  // const placeRef = useRef(null);
   const markerRef = useRef(null);
 
   const getUserCurrentLocation = () => {
@@ -83,9 +80,9 @@ export default function MapPage() {
     toast.success('location selected successfully.');
     navigate('/shipping');
   };
-  const onMarkerLoad = (marker: any) => {
-    markerRef.current = marker;
-  };
+  // const onMarkerLoad = (marker: any) => {
+  //   markerRef.current = marker;
+  // };
   return (
     <div className="full-box">
       <LoadScript googleMapsApiKey={googleApiKey}>

@@ -97,9 +97,7 @@ export default function OrderPage() {
     }
   }, [paypalConfig, paypalDispatch]);
   //timer
-  const [timeLeft, setTimeLeft] = useState(
-    moment(order?.createdAt).diff(moment(), 'seconds')
-  );
+  const [timeLeft, setTimeLeft] = useState(3600);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -109,6 +107,7 @@ export default function OrderPage() {
     }, 1000);
     return () => clearInterval(interval);
   }, [order?.createdAt]);
+
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
