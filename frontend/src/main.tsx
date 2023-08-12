@@ -31,6 +31,7 @@ import AdminRoute from './components/AdminRoute';
 import DashboardPage from './pages/DashboardPage.tsx';
 import ProductListPage from './pages/ProductListPage.tsx';
 import ProductEditPage from './pages/ProductEditPage.tsx';
+import MapPage from './pages/MapPage';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
       <Route path="signup" element={<SignupPage />} />
       <Route path="" element={<ProtectedRoute />}>
         <Route path="shipping" element={<ShippingAddressPage />} />
+        <Route path="/map" element={<MapPage />} />
         <Route path="payment" element={<PaymentMethodPage />} />
         <Route path="placeorder" element={<PlaceOrderPage />} />
         <Route path="/order/:id" element={<OrderPage />} />

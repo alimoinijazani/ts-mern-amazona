@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cart, CartItem, ShippingAddress } from './types/Cart';
+import { Cart, CartItem, ShippingAddress, Location } from './types/Cart';
 import { UserInfo } from './types/UserInfo';
 
 type AppState = {
@@ -25,7 +25,7 @@ const initialState: AppState = {
       : [],
     shippingAddress: localStorage.getItem('shippingAddress')
       ? JSON.parse(localStorage.getItem('shippingAddress')!)
-      : {},
+      : { location: {} },
     paymentMethod: localStorage.getItem('paymentMethod')
       ? localStorage.getItem('paymentMethod')!
       : 'PayPal',
@@ -45,7 +45,9 @@ type Action =
   | { type: 'USER_SIGNIN'; payload: UserInfo }
   | { type: 'USER_SIGNOUT' }
   | { type: 'SAVE_SHIPPING_ADDRESS'; payload: ShippingAddress }
-  | { type: 'SAVE_PAYMENT_METHOD'; payload: string };
+  | { type: 'SAVE_PAYMENT_METHOD'; payload: string }
+  | { type: 'SAVE_SHIPPING_ADDRESS_MAP_LOCATION'; payload: Location };
+
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SWITCH_MODE':
@@ -94,6 +96,7 @@ function reducer(state: AppState, action: Action): AppState {
           paymentMethod: 'PayPal',
           shippingAddress: {
             fullName: '',
+            location: { lat: 0, lng: 0 },
             address: '',
             postalCode: '',
             city: '',
@@ -111,6 +114,17 @@ function reducer(state: AppState, action: Action): AppState {
         cart: {
           ...state.cart,
           shippingAddress: action.payload,
+        },
+      };
+    case 'SAVE_SHIPPING_ADDRESS_MAP_LOCATION':
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          shippingAddress: {
+            ...state.cart.shippingAddress!,
+            location: action.payload,
+          },
         },
       };
     case 'SAVE_PAYMENT_METHOD':

@@ -38,6 +38,13 @@ export const usePayOrderMutation = () =>
         )
       ).data,
   });
+
+export const useGetGoogleApiKeyQuery = () =>
+  useQuery({
+    queryKey: ['google-api-key'],
+    queryFn: async () =>
+      (await apiClient.get<{ key: string }>(`/api/keys/google`)).data,
+  });
 export const useCreateOrderMutation = () =>
   useMutation({
     mutationFn: async (order: {
