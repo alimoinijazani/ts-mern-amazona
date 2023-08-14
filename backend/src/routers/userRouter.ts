@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { User, UserModel } from '../models/userModel';
 import bcrypt from 'bcryptjs';
-import { generateToken, isAuth } from './../utils';
+import { generateToken, isAuth, isAdmin } from './../utils';
 export const userRouter = express.Router();
 // POST /api/users/signin
 userRouter.post(
@@ -67,6 +67,66 @@ userRouter.put(
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
       });
+    }
+  })
+);
+const page_size = 8;
+userRouter.get(
+  '/',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const page = Number(req.query.page || '1');
+    const users = await UserModel.find({});
+    const countUsers = await UserModel.countDocuments();
+    res.send({
+      users,
+      countUsers,
+      pageSize: Math.ceil(countUsers / page_size),
+      page,
+    });
+  })
+);
+userRouter.get('/:id', async (req, res) => {
+  const user = await UserModel.findById(req.params.id);
+  if (user) {
+    res.send(user);
+  } else {
+    res.status(404).send({ message: 'User Not Found' });
+  }
+});
+userRouter.put(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findById(req.params.id);
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.isAdmin = Boolean(req.body.isAdmin);
+      const updatedUser = await user.save();
+      res.send({ message: 'User Updated', user: updatedUser });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+userRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await UserModel.findById(req.params.id);
+    if (user) {
+      if (user.email === 'admin@example.com') {
+        res.status(400).send({ message: 'Can Not Delete Admin User' });
+        return;
+      }
+      const deleteUser = await user.deleteOne();
+      res.send({ message: 'User Deleted', user: deleteUser });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );

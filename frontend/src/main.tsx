@@ -33,6 +33,8 @@ import ProductListPage from './pages/ProductListPage.tsx';
 import ProductEditPage from './pages/ProductEditPage.tsx';
 import MapPage from './pages/MapPage';
 import OrderListPage from './pages/OrderListPage.tsx';
+import UserListPage from './pages/UserListPage.tsx';
+import UserEditPage from './pages/UserEditPage.tsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -58,6 +60,8 @@ const router = createBrowserRouter(
         <Route path="products" element={<ProductListPage />} />
         <Route path="product/:id" element={<ProductEditPage />} />
         <Route path="orders" element={<OrderListPage />} />
+        <Route path="users" element={<UserListPage />} />
+        <Route path="user/:id" element={<UserEditPage />} />
       </Route>
     </Route>
   )
