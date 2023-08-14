@@ -7,10 +7,11 @@ import { convertProductToCartItem, getError } from '../utils';
 import { ApiError } from '../types/ApiError';
 import { Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
 export default function ProductPage() {
+  const [selectedImage, setSelectedImage] = useState('');
   const params = useParams();
   const { slug } = params;
   const {
@@ -45,8 +46,13 @@ export default function ProductPage() {
     <div>
       <Row>
         <Col md={6}>
-          <img className="large" src={product.image} alt={product.name}></img>
+          <img
+            className="large"
+            src={selectedImage || product.image}
+            alt={product.name}
+          ></img>
         </Col>
+
         <Col md={3}>
           <ListGroup variant="flush">
             <ListGroup.Item>
@@ -65,6 +71,24 @@ export default function ProductPage() {
             <ListGroup.Item>
               Description:
               <p>{product.description}</p>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row xs={1} md={2} className="g-2">
+                {[product.image, ...product.images].map((x) => (
+                  <Col key={x}>
+                    <Card>
+                      <Button
+                        className="thumbnail"
+                        type="button"
+                        variant="light"
+                        onClick={() => setSelectedImage(x)}
+                      >
+                        <Card.Img variant="top" src={x} alt="product" />
+                      </Button>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
             </ListGroup.Item>
           </ListGroup>
         </Col>
