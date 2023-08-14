@@ -42,6 +42,9 @@ img.thumbnail {
   left: auto;
   right: 1px;
 }
+.text-bold {
+  font-weight: bold;
+}
 /* header */
 
 .navbar-brand {

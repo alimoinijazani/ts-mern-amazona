@@ -162,10 +162,10 @@ export default function ProductEditPage() {
             <ListGroup variant="flush">
               {images.map((x) => (
                 <ListGroup.Item key={x}>
-                  {x}
                   <Button variant="light" onClick={() => deleteFileHandler(x)}>
                     <i className="fa fa-times-circle"></i>
                   </Button>
+                  <img src={x} alt="" className="thumbnail" />
                 </ListGroup.Item>
               ))}
             </ListGroup>

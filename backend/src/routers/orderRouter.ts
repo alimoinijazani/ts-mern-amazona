@@ -156,3 +156,38 @@ orderRouter.put(
     }
   })
 );
+const page_size = 8;
+orderRouter.get(
+  '/',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const page = Number(req.query.page || 1);
+    const orders = await OrderModel.find()
+      .populate('user', 'name')
+      .skip(page_size * (page - 1))
+      .limit(page_size);
+    const countOrders = await OrderModel.countDocuments();
+    res.send({
+      orders,
+      countOrders,
+      pages: Math.ceil(countOrders / page_size),
+      page,
+    });
+  })
+);
+
+orderRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  asyncHandler(async (req: Request, res: Response) => {
+    const order = await OrderModel.findById(req.params.id);
+    if (order) {
+      const deleteOrder = await order.deleteOne();
+      res.send({ message: 'Order Deleted', order: deleteOrder });
+    } else {
+      res.status(404).send({ message: 'Order Not Found' });
+    }
+  })
+);

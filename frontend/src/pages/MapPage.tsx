@@ -38,7 +38,6 @@ export default function MapPage() {
     }
   };
 
-  console.log(mapRef);
   const { data: googleConfig } = useGetGoogleApiKeyQuery();
 
   useEffect(() => {

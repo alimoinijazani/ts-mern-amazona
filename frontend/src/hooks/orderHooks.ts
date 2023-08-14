@@ -73,3 +73,19 @@ export const useGetOrderHistoryQuery = (page: number) =>
         )
       ).data,
   });
+export const useGetOrdersQuery = (page: number) =>
+  useQuery({
+    queryKey: ['orders', page],
+    queryFn: async () =>
+      (
+        await apiClient.get<{ orders: [Order]; page: number; pages: number }>(
+          `api/orders?page=${page}`
+        )
+      ).data,
+  });
+export const useDeleteOrderMutation = () =>
+  useMutation({
+    mutationFn: async (orderId: string) =>
+      (await apiClient.delete<{ message: string }>(`api/orders/${orderId}`))
+        .data,
+  });
