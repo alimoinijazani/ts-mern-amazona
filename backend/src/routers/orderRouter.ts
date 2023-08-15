@@ -5,6 +5,9 @@ import { Product, ProductModel } from '../models/productModel';
 import { isAdmin, isAuth } from '../utils';
 import { UserModel } from '../models/userModel';
 import { CartItem } from '../types/Cart';
+import cron from 'node-cron';
+import { Item } from './../models/orderModel';
+
 export const orderRouter = express.Router();
 
 orderRouter.get(
@@ -117,17 +120,7 @@ orderRouter.post(
             .send({ message: 'one or more products are out of stock' });
         }
       });
-      setTimeout(async () => {
-        const orderCheck = await OrderModel.findById(createdOrder._id);
-        req.body.orderItems.map(async (item: CartItem) => {
-          const product = await ProductModel.findById(item._id);
-          if (product && !orderCheck?.isPaid) {
-            product.countInStock = product.countInStock + item.quantity;
-            await product.save();
-            console.log('product return');
-          }
-        });
-      }, 3600000);
+
       res.status(201).json({ message: 'Order Created', order: createdOrder });
     }
   })
@@ -191,3 +184,23 @@ orderRouter.delete(
     }
   })
 );
+cron.schedule(' 0 * * * *', async () => {
+  const orders = await OrderModel.find({
+    isPaid: false,
+    createdAt: { $lte: Date.now() - 3600000 },
+  });
+  orders.map(async (order) => {
+    order.orderItems.map(async (item: Item) => {
+      const product = await ProductModel.findById(item.product);
+      if (product && !order?.isPaid) {
+        product.countInStock = Number(product.countInStock + item.quantity);
+        await product.save();
+
+        console.log('product return');
+      } else {
+        console.log('order time not over yet');
+      }
+    });
+    await order.deleteOne();
+  });
+});

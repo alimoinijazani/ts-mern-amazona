@@ -1,9 +1,10 @@
 export type CartItem = {
-  image: string | undefined;
-  slug: string;
-  quantity: number;
-  countInStock: number;
-  price: number;
-  _id: string;
+  _id?: string;
   name: string;
+  slug?: string;
+  image: string | undefined;
+  price: number;
+  countInStock?: number;
+  quantity: number;
+  product: string;
 };

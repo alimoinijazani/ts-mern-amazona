@@ -24,7 +24,7 @@ class ShippingAddress {
   public lng?: number;
 }
 
-class Item {
+export class Item {
   @prop({ required: true })
   public name!: string;
   @prop({ required: true })
